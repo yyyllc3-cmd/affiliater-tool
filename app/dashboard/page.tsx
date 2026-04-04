@@ -23,14 +23,13 @@ export default function DashboardPage() {
 
   const menus = [
     { id: 'dashboard', label: '収益ダッシュボード' },
+    { id: 'biolink', label: 'bioリンク管理', path: '/biolink' },
     { id: 'contents', label: 'コンテンツ管理' },
-    { id: 'biolink', label: 'bioリンク管理' },
     { id: 'settings', label: '設定' },
   ]
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh' }}>
-      {/* サイドバー */}
       <div style={{ width: '220px', background: '#fff', borderRight: '0.5px solid rgba(0,0,0,0.08)', padding: '24px 16px', display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '32px', paddingLeft: '8px' }}>
           <div style={{ width: '28px', height: '28px', background: '#1D9E75', borderRadius: '7px', flexShrink: 0 }}></div>
@@ -41,7 +40,7 @@ export default function DashboardPage() {
           {menus.map(m => (
             <button
               key={m.id}
-              onClick={() => setActiveMenu(m.id)}
+              onClick={() => m.path ? router.push(m.path) : setActiveMenu(m.id)}
               style={{
                 width: '100%', textAlign: 'left', padding: '9px 12px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontSize: '13px', marginBottom: '2px',
                 background: activeMenu === m.id ? '#E1F5EE' : 'transparent',
@@ -65,11 +64,9 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* メインコンテンツ */}
       <div style={{ flex: 1, padding: '32px', overflowY: 'auto' }}>
         {activeMenu === 'dashboard' && <DashboardContent />}
         {activeMenu === 'contents' && <ComingSoon title="コンテンツ管理" desc="記事・SNS投稿をここで管理できます。近日実装予定です。" />}
-        {activeMenu === 'biolink' && <ComingSoon title="bioリンク管理" desc="Instagramプロフィール欄のリンクを管理できます。近日実装予定です。" />}
         {activeMenu === 'settings' && <ComingSoon title="設定" desc="ASP連携・プロフィール設定などができます。近日実装予定です。" />}
       </div>
     </div>
@@ -104,9 +101,9 @@ function DashboardContent() {
       <div style={{ background: '#fff', border: '0.5px solid rgba(0,0,0,0.08)', borderRadius: '12px', padding: '24px' }}>
         <div style={{ fontSize: '13px', fontWeight: '500', color: '#1a1a1a', marginBottom: '16px' }}>次のステップ</div>
         {[
-          { num: '1', text: 'ASPアカウントを連携して収益データを取り込む', done: false },
-          { num: '2', text: 'bioリンクを設定してInstagramからの流入を計測する', done: false },
-          { num: '3', text: 'コンテンツを登録して管理を始める', done: false },
+          { num: '1', text: 'bioリンクを設定してInstagramからの流入を計測する' },
+          { num: '2', text: 'ASPアカウントを連携して収益データを取り込む' },
+          { num: '3', text: 'コンテンツを登録して管理を始める' },
         ].map((s, i) => (
           <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 0', borderBottom: i < 2 ? '0.5px solid rgba(0,0,0,0.06)' : 'none' }}>
             <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#E1F5EE', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: '500', color: '#085041', flexShrink: 0 }}>{s.num}</div>
