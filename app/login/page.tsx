@@ -205,7 +205,7 @@ export default function LoginPage() {
           </div>
 
           <p style={{ textAlign: 'center', fontSize: '11px', color: '#bbb', marginTop: '20px' }}>
-            © 2025 Affiliater Tool
+            © Affiliater Tool YYYLLC 2026
           </p>
         </div>
       </div>
