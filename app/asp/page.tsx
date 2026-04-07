@@ -164,8 +164,6 @@ function AspForm({ userId, asp }: { userId: string; asp: AspConfig }) {
   const [saveMsg, setSaveMsg] = useState('')
   const [syncMsg, setSyncMsg] = useState('')
   const [earnings, setEarnings] = useState<Earning[]>([])
-  const [demoMode, setDemoMode] = useState(false)
-
   useEffect(() => {
     supabase
       .from('asp_credentials')
@@ -227,19 +225,6 @@ function AspForm({ userId, asp }: { userId: string; asp: AspConfig }) {
       setSyncMsg(`同期完了 — ¥${Number(json.total_earnings).toLocaleString()} (CV ${json.cv_count}件)`)
       loadEarnings()
     }
-  }
-
-  const handleDemo = () => {
-    const now = new Date()
-    const thisMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-01`
-    const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1)
-    const lastMonth = `${lastMonthDate.getFullYear()}-${String(lastMonthDate.getMonth() + 1).padStart(2, '0')}-01`
-    setEarnings([
-      { month: thisMonth,  earnings: 28150, click_count: 1240, cv_count: 23 },
-      { month: lastMonth,  earnings: 45320, click_count: 980,  cv_count: 31 },
-    ])
-    setDemoMode(true)
-    setSyncMsg('')
   }
 
   const hasKey = fields.api_key.trim().length > 0
@@ -306,12 +291,6 @@ function AspForm({ userId, asp }: { userId: string; asp: AspConfig }) {
           >
             {syncing ? '同期中...' : '収益を同期'}
           </button>
-          <button
-            onClick={handleDemo}
-            style={{ padding: '9px 20px', background: '#F59E0B', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: '500', cursor: 'pointer' }}
-          >
-            🧪 デモデータで試す
-          </button>
           {saveMsg && (
             <span style={{ fontSize: '12px', color: saveMsg.startsWith('エラー') ? '#e53e3e' : '#1D9E75' }}>{saveMsg}</span>
           )}
@@ -330,11 +309,6 @@ function AspForm({ userId, asp }: { userId: string; asp: AspConfig }) {
         <div style={{ background: '#fff', border: '0.5px solid rgba(0,0,0,0.08)', borderRadius: '12px', padding: '24px' }}>
           <div style={{ fontSize: '13px', fontWeight: '500', color: '#1a1a1a', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
             {asp.label} 収益履歴
-            {demoMode && (
-              <span style={{ fontSize: '10px', fontWeight: '700', background: '#FEF3C7', color: '#92400E', padding: '2px 8px', borderRadius: '4px', letterSpacing: '0.05em' }}>
-                DEMO
-              </span>
-            )}
           </div>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
             <thead>
