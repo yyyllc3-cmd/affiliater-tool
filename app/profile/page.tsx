@@ -233,10 +233,18 @@ export default function ProfilePage() {
           <button onClick={() => router.push("/dashboard")} style={{ background: "none", border: "none", cursor: "pointer", color: "#888", fontSize: "13px" }}>← ダッシュボード</button>
           <span style={{ fontSize: "15px", fontWeight: "500", color: "#1a1a1a" }}>プロフィール設定</span>
         </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+          <button
+            onClick={async () => { await supabase.auth.signOut(); router.push("/login"); }}
+            style={{ background: "none", border: "0.5px solid rgba(0,0,0,0.15)", borderRadius: "8px", padding: "8px 16px", fontSize: "13px", color: "#888", cursor: "pointer" }}
+          >
+            ログアウト
+          </button>
         <button onClick={handleSave} disabled={saving || !!usernameError}
           style={{ background: saving || usernameError ? "#ccc" : "#1D9E75", color: "#fff", border: "none", borderRadius: "8px", padding: "8px 20px", fontSize: "13px", fontWeight: "500", cursor: saving || usernameError ? "not-allowed" : "pointer" }}>
           {saving ? "保存中..." : "保存"}
         </button>
+        </div>
       </div>
 
       <div style={{ maxWidth: "600px", margin: "0 auto", padding: "32px 24px", display: "flex", flexDirection: "column", gap: "16px" }}>
