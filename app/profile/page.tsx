@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { createClient } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
+import { useIsPro } from "@/lib/useIsPro";
 
 // Supabaseクライアントをコンポーネント外で一度だけ生成（Multiple instances警告を防ぐ）
 const supabase = createClient();
@@ -73,6 +74,7 @@ export default function ProfilePage() {
   const [isDragging, setIsDragging] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [usernameError, setUsernameError] = useState("");
+  const isPro = useIsPro();
 
   useEffect(() => {
     const init = async () => {
@@ -256,18 +258,29 @@ export default function ProfilePage() {
 
         {/* カスタムURL */}
         <div style={{ background: "#fff", border: "0.5px solid rgba(0,0,0,0.08)", borderRadius: "12px", padding: "24px" }}>
-          <div style={{ fontSize: "14px", fontWeight: "500", color: "#1a1a1a", marginBottom: "4px" }}>カスタムURL</div>
-          <div style={{ fontSize: "12px", color: "#888", marginBottom: "16px" }}>あなたの公開ページのURLになります</div>
-          <div style={{ display: "flex", border: "1px solid #ddd", borderRadius: "8px", overflow: "hidden" }}>
-            <span style={{ background: "#f5f5f5", color: "#888", fontSize: "13px", padding: "10px 14px", borderRight: "1px solid #ddd", whiteSpace: "nowrap" }}>/links/</span>
-            <input type="text" value={profile.username}
-              onChange={(e) => { setProfile(prev => ({ ...prev, username: e.target.value.toLowerCase() })); setUsernameError(validateUsername(e.target.value)); }}
-              placeholder="yourname"
-              style={{ flex: 1, padding: "10px 14px", fontSize: "13px", border: "none", outline: "none" }} />
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+            <div style={{ fontSize: "14px", fontWeight: "500", color: "#1a1a1a" }}>カスタムURL</div>
+            {isPro === false && <span style={{ fontSize: "10px", fontWeight: "700", background: "#FEF3C7", color: "#92400E", padding: "2px 8px", borderRadius: "4px" }}>Pro限定</span>}
           </div>
-          {usernameError && <div style={{ color: "#ef4444", fontSize: "12px", marginTop: "6px" }}>{usernameError}</div>}
-          {profile.username && !usernameError && (
-            <div style={{ color: "#1D9E75", fontSize: "12px", marginTop: "6px" }}>公開URL: affiliater-tool.vercel.app/links/{profile.username}</div>
+          <div style={{ fontSize: "12px", color: "#888", marginBottom: "16px" }}>あなたの公開ページのURLになります</div>
+          {isPro === false ? (
+            <div style={{ background: "#f9f9f9", border: "1px solid #e5e7eb", borderRadius: "8px", padding: "12px 14px", fontSize: "12px", color: "#888" }}>
+              🔒 カスタムURLはProプランでご利用いただけます
+            </div>
+          ) : (
+            <>
+              <div style={{ display: "flex", border: "1px solid #ddd", borderRadius: "8px", overflow: "hidden" }}>
+                <span style={{ background: "#f5f5f5", color: "#888", fontSize: "13px", padding: "10px 14px", borderRight: "1px solid #ddd", whiteSpace: "nowrap" }}>/links/</span>
+                <input type="text" value={profile.username}
+                  onChange={(e) => { setProfile(prev => ({ ...prev, username: e.target.value.toLowerCase() })); setUsernameError(validateUsername(e.target.value)); }}
+                  placeholder="yourname"
+                  style={{ flex: 1, padding: "10px 14px", fontSize: "13px", border: "none", outline: "none" }} />
+              </div>
+              {usernameError && <div style={{ color: "#ef4444", fontSize: "12px", marginTop: "6px" }}>{usernameError}</div>}
+              {profile.username && !usernameError && (
+                <div style={{ color: "#1D9E75", fontSize: "12px", marginTop: "6px" }}>公開URL: affiliater-tool.vercel.app/links/{profile.username}</div>
+              )}
+            </>
           )}
         </div>
 
@@ -343,35 +356,43 @@ export default function ProfilePage() {
 
         {/* テーマ選択 */}
         <div style={{ background: "#fff", border: "0.5px solid rgba(0,0,0,0.08)", borderRadius: "12px", padding: "24px" }}>
-          <div style={{ fontSize: "14px", fontWeight: "500", color: "#1a1a1a", marginBottom: "4px" }}>公開ページのテーマ</div>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+            <div style={{ fontSize: "14px", fontWeight: "500", color: "#1a1a1a" }}>公開ページのテーマ</div>
+            {isPro === false && <span style={{ fontSize: "10px", fontWeight: "700", background: "#FEF3C7", color: "#92400E", padding: "2px 8px", borderRadius: "4px" }}>Pro限定（4種）</span>}
+          </div>
           <div style={{ fontSize: "12px", color: "#888", marginBottom: "20px" }}>bioリンクページの背景デザインを選べます</div>
           <div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
-            {THEMES.map(t => (
-              <button
-                key={t.id}
-                onClick={() => setProfile(prev => ({ ...prev, theme: t.id }))}
-                style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px", background: "none", border: "none", cursor: "pointer", padding: 0 }}
-              >
-                <div style={{
-                  width: "72px", height: "52px", borderRadius: "10px",
-                  background: t.preview,
-                  border: profile.theme === t.id ? "2.5px solid #1D9E75" : t.border || "2.5px solid transparent",
-                  boxShadow: profile.theme === t.id ? "0 0 0 3px rgba(29,158,117,0.2)" : "none",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  transition: "all 0.15s",
-                  position: "relative",
-                }}>
-                  {profile.theme === t.id && (
-                    <div style={{ width: "20px", height: "20px", borderRadius: "50%", background: "#1D9E75", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <span style={{ color: "#fff", fontSize: "11px", fontWeight: "700" }}>✓</span>
-                    </div>
-                  )}
-                </div>
-                <span style={{ fontSize: "11px", color: profile.theme === t.id ? "#1D9E75" : "#888", fontWeight: profile.theme === t.id ? "500" : "400" }}>
-                  {t.label}
-                </span>
-              </button>
-            ))}
+            {THEMES.map((t, idx) => {
+              const locked = isPro === false && idx > 0
+              return (
+                <button
+                  key={t.id}
+                  onClick={() => { if (!locked) setProfile(prev => ({ ...prev, theme: t.id })) }}
+                  style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px", background: "none", border: "none", cursor: locked ? "not-allowed" : "pointer", padding: 0, opacity: locked ? 0.45 : 1 }}
+                >
+                  <div style={{
+                    width: "72px", height: "52px", borderRadius: "10px",
+                    background: t.preview,
+                    border: profile.theme === t.id ? "2.5px solid #1D9E75" : t.border || "2.5px solid transparent",
+                    boxShadow: profile.theme === t.id ? "0 0 0 3px rgba(29,158,117,0.2)" : "none",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    transition: "all 0.15s",
+                    position: "relative",
+                  }}>
+                    {locked ? (
+                      <span style={{ fontSize: "16px" }}>🔒</span>
+                    ) : profile.theme === t.id && (
+                      <div style={{ width: "20px", height: "20px", borderRadius: "50%", background: "#1D9E75", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <span style={{ color: "#fff", fontSize: "11px", fontWeight: "700" }}>✓</span>
+                      </div>
+                    )}
+                  </div>
+                  <span style={{ fontSize: "11px", color: profile.theme === t.id ? "#1D9E75" : "#888", fontWeight: profile.theme === t.id ? "500" : "400" }}>
+                    {t.label}
+                  </span>
+                </button>
+              )
+            })}
           </div>
         </div>
 

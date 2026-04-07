@@ -2,6 +2,9 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
+import { useIsPro } from '@/lib/useIsPro'
+
+const FREE_LINK_LIMIT = 3
 import {
   DndContext,
   closestCenter,
@@ -106,6 +109,8 @@ export default function BioLinkPage() {
   const [ranking, setRanking] = useState<ClickRank[]>([])
   const router = useRouter()
   const supabase = createClient()
+  const isPro = useIsPro()
+  const atLimit = !isPro && links.length >= FREE_LINK_LIMIT
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
@@ -152,6 +157,7 @@ export default function BioLinkPage() {
 
   const addLink = async () => {
     if (!title || !url || !userId) return
+    if (atLimit) return
     setLoading(true)
     const { error } = await supabase.from('bio_links').insert({
       user_id: userId,
@@ -235,17 +241,26 @@ export default function BioLinkPage() {
             style={{ width: '100%', padding: '9px 12px', border: '0.5px solid rgba(0,0,0,0.15)', borderRadius: '8px', fontSize: '13px', outline: 'none', boxSizing: 'border-box' }}
           />
         </div>
-        <button
-          onClick={addLink}
-          disabled={loading || !title || !url}
-          style={{ width: '100%', padding: '10px', background: '#1D9E75', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: '500', cursor: loading || !title || !url ? 'not-allowed' : 'pointer', opacity: loading || !title || !url ? 0.6 : 1 }}
-        >
-          {loading ? '追加中...' : '追加する'}
-        </button>
+        {atLimit ? (
+          <div style={{ background: '#FEF3C7', border: '1px solid #FCD34D', borderRadius: '8px', padding: '12px 14px', fontSize: '12px', color: '#92400E', marginBottom: '4px' }}>
+            無料プランはリンクを{FREE_LINK_LIMIT}件まで登録できます。
+            <button onClick={async () => { const { data: { session } } = await supabase.auth.getSession(); if (!session) return; const res = await fetch('/api/stripe/checkout', { method: 'POST', headers: { Authorization: `Bearer ${session.access_token}` } }); const { url } = await res.json(); if (url) window.location.href = url }} style={{ marginLeft: '8px', color: '#1D9E75', fontWeight: '600', background: 'none', border: 'none', cursor: 'pointer', fontSize: '12px' }}>Proにアップグレード →</button>
+          </div>
+        ) : (
+          <button
+            onClick={addLink}
+            disabled={loading || !title || !url}
+            style={{ width: '100%', padding: '10px', background: '#1D9E75', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '13px', fontWeight: '500', cursor: loading || !title || !url ? 'not-allowed' : 'pointer', opacity: loading || !title || !url ? 0.6 : 1 }}
+          >
+            {loading ? '追加中...' : '追加する'}
+          </button>
+        )}
       </div>
 
       <div style={{ marginBottom: '12px' }}>
-        <div style={{ fontSize: '13px', fontWeight: '500', color: '#1a1a1a', marginBottom: '2px' }}>登録済みリンク（{links.length}件）</div>
+        <div style={{ fontSize: '13px', fontWeight: '500', color: '#1a1a1a', marginBottom: '2px' }}>
+          登録済みリンク（{links.length}件{!isPro ? ` / 無料プラン上限 ${FREE_LINK_LIMIT}件` : ''}）
+        </div>
         <div style={{ fontSize: '11px', color: '#888' }}>⠿ アイコンをドラッグして並び替えできます</div>
       </div>
 

@@ -2,6 +2,8 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
+import { useIsPro } from '@/lib/useIsPro'
+import UpgradePrompt from '@/components/UpgradePrompt'
 
 type ShortLink = {
   id: string
@@ -21,6 +23,7 @@ export default function ShortLinkPage() {
   const [origin, setOrigin] = useState('')
   const router = useRouter()
   const supabase = createClient()
+  const isPro = useIsPro()
 
   useEffect(() => {
     setOrigin(window.location.origin)
@@ -109,6 +112,10 @@ export default function ShortLinkPage() {
       <div style={{ flex: 1, padding: '32px', overflowY: 'auto' }}>
         <h2 style={{ fontSize: '18px', fontWeight: '500', margin: '0 0 4px', color: '#1a1a1a' }}>短縮リンク</h2>
         <p style={{ fontSize: '13px', color: '#888', margin: '0 0 24px' }}>アフィリエイトURLを短縮して管理できます</p>
+        {isPro === false && (
+          <UpgradePrompt message="アフィリエイトリンクの短縮機能はProプラン限定です。" />
+        )}
+        {isPro === false ? null : (<>
 
         {/* 作成フォーム */}
         <div style={{ background: '#fff', border: '0.5px solid rgba(0,0,0,0.08)', borderRadius: '12px', padding: '24px', marginBottom: '20px' }}>
@@ -198,6 +205,7 @@ export default function ShortLinkPage() {
             </table>
           </div>
         )}
+        </>)}
       </div>
     </div>
   )

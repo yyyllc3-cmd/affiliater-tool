@@ -2,6 +2,8 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase'
 import { useRouter } from 'next/navigation'
+import { useIsPro } from '@/lib/useIsPro'
+import UpgradePrompt from '@/components/UpgradePrompt'
 
 type AspConfig = {
   id: string
@@ -61,6 +63,7 @@ export default function AspPage() {
   const [activeTab, setActiveTab] = useState('a8net')
   const router = useRouter()
   const supabase = createClient()
+  const isPro = useIsPro()
 
   useEffect(() => {
     supabase.auth.getUser().then(({ data: { user } }) => {
@@ -147,7 +150,10 @@ export default function AspPage() {
         </div>
 
         {/* フォームカード */}
-        {userId && (
+        {isPro === false && (
+          <UpgradePrompt message="ASP連携機能はProプラン限定です。A8.netなどのASPと連携して収益データを自動取得できます。" />
+        )}
+        {isPro === true && userId && (
           <AspForm key={activeTab} userId={userId} asp={activeAsp} />
         )}
       </div>
