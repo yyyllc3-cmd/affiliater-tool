@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import './globals.css'
 export const metadata: Metadata = {
   title: 'Affiliater Tool',
   description: 'アフィリエイター向け管理ツール',
