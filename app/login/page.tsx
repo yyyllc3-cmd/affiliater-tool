@@ -46,14 +46,14 @@ export default function LoginPage() {
 
       {/* 左：ヒーローエリア */}
       <div style={{
-        flex: 1, display: 'none',
+        flex: 1, display: 'flex',
         background: 'linear-gradient(145deg, #0a2e1f 0%, #0f4a32 40%, #1D9E75 100%)',
         padding: '48px',
         flexDirection: 'column',
         justifyContent: 'center',
         position: 'relative',
         overflow: 'hidden',
-      }} className="hero-panel">
+      }}>
 
         {/* 背景装飾 */}
         <div style={{ position: 'absolute', top: '-80px', right: '-80px', width: '320px', height: '320px', borderRadius: '50%', background: 'rgba(255,255,255,0.04)' }} />
@@ -210,11 +210,6 @@ export default function LoginPage() {
         </div>
       </div>
 
-      <style>{`
-        @media (min-width: 768px) {
-          .hero-panel { display: flex !important; }
-        }
-      `}</style>
     </div>
   )
 }
