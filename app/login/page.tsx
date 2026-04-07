@@ -16,8 +16,13 @@ export default function LoginPage() {
     setLoading(true)
     setMessage('')
     if (isSignUp) {
-      const { error } = await supabase.auth.signUp({ email, password })
+      const { data, error } = await supabase.auth.signUp({ email, password })
       if (error) { setMessage(error.message); setLoading(false); return }
+      if (data.user?.identities?.length === 0) {
+        setMessage('このメールアドレスはすでに登録済みです')
+        setLoading(false)
+        return
+      }
       setMessage('確認メールを送信しました。メールを確認してください。')
     } else {
       const { error } = await supabase.auth.signInWithPassword({ email, password })
