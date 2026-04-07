@@ -347,7 +347,7 @@ function ReferrerChart({ userId }: { userId: string }) {
       <div style={{ fontSize: '13px', fontWeight: '500', color: '#1a1a1a', marginBottom: '16px' }}>流入元分析</div>
       <ResponsiveContainer width="100%" height={220}>
         <PieChart>
-          <Pie data={data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label={({ name, percent }) => `${name} ${Math.round(percent * 100)}%`} labelLine={false} fontSize={11}>
+          <Pie data={data} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80} label={({ name, percent }) => `${name} ${Math.round((percent ?? 0) * 100)}%`} labelLine={false} fontSize={11}>
             {data.map((_, i) => (
               <Cell key={i} fill={REFERRER_COLORS[i % REFERRER_COLORS.length]} />
             ))}
