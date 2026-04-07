@@ -253,7 +253,7 @@ function ClickAnalytics({ userId }: { userId: string }) {
             <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: '#888' }} axisLine={false} tickLine={false} />
             <Tooltip
               contentStyle={{ fontSize: '12px', borderRadius: '8px', border: '0.5px solid rgba(0,0,0,0.1)', boxShadow: 'none' }}
-              formatter={(v: number) => [v, 'クリック']}
+              formatter={(v) => [v, 'クリック']}
             />
             <Bar dataKey="clicks" fill="#1D9E75" radius={[4, 4, 0, 0]} maxBarSize={40} />
           </BarChart>
@@ -352,7 +352,7 @@ function ReferrerChart({ userId }: { userId: string }) {
               <Cell key={i} fill={REFERRER_COLORS[i % REFERRER_COLORS.length]} />
             ))}
           </Pie>
-          <Tooltip formatter={(v: number) => [v, 'クリック']} />
+          <Tooltip formatter={(v) => [v, 'クリック']} />
           <Legend iconSize={10} wrapperStyle={{ fontSize: '11px' }} />
         </PieChart>
       </ResponsiveContainer>
