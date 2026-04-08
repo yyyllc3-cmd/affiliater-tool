@@ -34,7 +34,7 @@ export default function DashboardPage() {
   const menus = [
     { id: 'dashboard', label: '収益ダッシュボード' },
     { id: 'biolink', label: 'bioリンク管理', path: '/biolink' },
-    { id: 'contents', label: 'コンテンツ管理' },
+    { id: 'contents', label: 'コンテンツ管理', path: '/contents' },
     { id: 'asp', label: 'ASP連携', path: '/asp' },
     { id: 'shortlink', label: '短縮リンク', path: '/shortlink' },
     { id: 'profile', label: 'プロフィール設定', path: '/profile' },
